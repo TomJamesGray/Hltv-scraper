@@ -5,6 +5,7 @@ import sys
 import logging
 import sqlite3
 baseURL = "http://www.hltv.org/"
+#Strip whitespace and remove blak elements from list
 def stripList(data):
     for i in range(0,len(data)):
         data[i] = str(data[i]).strip()
@@ -17,7 +18,7 @@ def stripList(data):
 def stripFromList(data,toStrip):
     for i in range(0,len(data)):
         data[i] = data[i].strip(toStrip)
-
+#Insert data to the db
 def insertMatchData(teamOne,teamTwo,db):
     conn = sqlite3.connect(db)
     curs = conn.cursor()
@@ -48,7 +49,6 @@ def main():
     #Get match url
     matchUrl = stripList(tree.xpath("///div[@class='matchActionCell']/a/@href"))
     print(matchUrl)
-#    print("Length teamOne {} \nLengthTeamTwo {}".format(len(teamOne),len(teamTwo)))
     print("Inserting into db")
     insertMatchData(teamOne,teamTwo,"matches.db")
 if __name__ == "__main__":
