@@ -28,11 +28,14 @@ def insertMatchData(teamOne,teamTwo,matchUrl,db):
         sys.exit(1)
 
     for i in range(0,len(teamOne)):
-        curs.execute("INSERT INTO matches ('Team1','Team2','MatchUrl') VALUES (?,?,?)",
+        try:
+            curs.execute("INSERT INTO matches ('Team1','Team2','MatchUrl') VALUES (?,?,?)",
                 (teamOne[i],teamTwo[i],baseURL + matchUrl[i]))
-
+        except sqlite3.IntegrityError:
+            print("Duplicate match url {}".format(matchUrl[i]))
+            print("Skipping match")
+            continue
     conn.commit()
-
 def main():
     global baseURL
     logging.basicConfig(level=logging.DEBUG)
