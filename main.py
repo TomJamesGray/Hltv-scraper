@@ -4,7 +4,7 @@ import requests
 import sys
 import logging
 import sqlite3
-baseURL = "http://www.hltv.org/"
+baseURL = "http://www.hltv.org"
 #Strip whitespace and remove blak elements from list
 def stripList(data):
     for i in range(0,len(data)):
@@ -38,7 +38,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
 
     #Get raw match page from hltv
-    page = requests.get(baseURL + "matches/")
+    page = requests.get(baseURL + "/matches/")
     logging.info("Code {} from hltv request".format(page.status_code))
 
     #Check status code - 200 is good
