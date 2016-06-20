@@ -19,7 +19,8 @@ def stripFromList(data,toStrip):
     for i in range(0,len(data)):
         data[i] = data[i].strip(toStrip)
 #Insert data to the db
-def insertMatchData(teamOne,teamTwo,db):
+def insertMatchData(teamOne,teamTwo,matchUrl,db):
+    global baseURL
     conn = sqlite3.connect(db)
     curs = conn.cursor()
     if not len(teamOne) == len(teamTwo):
@@ -27,7 +28,8 @@ def insertMatchData(teamOne,teamTwo,db):
         sys.exit(1)
 
     for i in range(0,len(teamOne)):
-        curs.execute("INSERT INTO matches ('Team1','Team2') VALUES (?,?)",(teamOne[i],teamTwo[i]))
+        curs.execute("INSERT INTO matches ('Team1','Team2','MatchUrl') VALUES (?,?,?)",
+                (teamOne[i],teamTwo[i],baseURL + matchUrl[i]))
 
     conn.commit()
 
@@ -50,6 +52,6 @@ def main():
     matchUrl = stripList(tree.xpath("///div[@class='matchActionCell']/a/@href"))
     print(matchUrl)
     print("Inserting into db")
-    insertMatchData(teamOne,teamTwo,"matches.db")
+    insertMatchData(teamOne,teamTwo,matchUrl,"matches.db")
 if __name__ == "__main__":
     main()
