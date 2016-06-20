@@ -18,6 +18,7 @@ def stripList(data):
 def stripFromList(data,toStrip):
     for i in range(0,len(data)):
         data[i] = data[i].strip(toStrip)
+
 #Insert data to the db
 def insertMatchData(teamOne,teamTwo,matchUrl,db):
     global baseURL
@@ -32,8 +33,8 @@ def insertMatchData(teamOne,teamTwo,matchUrl,db):
             curs.execute("INSERT INTO matches ('Team1','Team2','MatchUrl') VALUES (?,?,?)",
                 (teamOne[i],teamTwo[i],baseURL + matchUrl[i]))
         except sqlite3.IntegrityError:
-            print("Duplicate match url {}".format(matchUrl[i]))
-            print("Skipping match")
+            logging.info("Duplicate match url {}".format(matchUrl[i]))
+            logging.info("Skipping match")
             continue
     conn.commit()
 def main():
@@ -53,7 +54,6 @@ def main():
     teamTwo = stripList(tree.xpath("///div[@class='matchTeam2Cell']/a/child::text()"))
     #Get match url
     matchUrl = stripList(tree.xpath("///div[@class='matchActionCell']/a/@href"))
-    print("Inserting into db")
     insertMatchData(teamOne,teamTwo,matchUrl,"matches.db")
 if __name__ == "__main__":
     main()
