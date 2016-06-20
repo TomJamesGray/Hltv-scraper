@@ -50,7 +50,6 @@ def main():
     teamTwo = stripList(tree.xpath("///div[@class='matchTeam2Cell']/a/child::text()"))
     #Get match url
     matchUrl = stripList(tree.xpath("///div[@class='matchActionCell']/a/@href"))
-    print(matchUrl)
     print("Inserting into db")
     insertMatchData(teamOne,teamTwo,matchUrl,"matches.db")
 if __name__ == "__main__":
