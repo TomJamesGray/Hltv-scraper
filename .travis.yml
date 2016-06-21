@@ -5,4 +5,5 @@ python:
 install:
   - pip install pytest
   - pip install lxml
+  - pip install requests
 script: python -m pytest
