@@ -4,5 +4,5 @@ python:
   - "3.5"
 install:
   - pip install pytest
-  - pip install pillow
+  - pip install lxml
 script: python -m pytest
