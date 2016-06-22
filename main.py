@@ -47,7 +47,7 @@ def main():
         #Prepend the baseUrl to the match URL
         matchUrl[i] = baseURL + matchUrl[i]
         #use the matchUrl to retrieve the matchInfo
-        matchDate.append(retrieveMatchInfo.getGameInfo(matchUrl[i]))
+        matchDate.append(retrieveMatchInfo.getGameTime(matchUrl[i]))
     insertMatchData(teamOne,teamTwo,matchUrl,matchDate,"matches.db")
 if __name__ == "__main__":
     main()
