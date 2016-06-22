@@ -1,6 +1,8 @@
 import sqlite3
 #Strip whitespace and remove blak elements from list
 def stripList(data):
+    if not isinstance(data,list):
+        raise ValueError("Argument provided {}, expected string".format(type(data)))
     for i in range(0,len(data)):
         data[i] = str(data[i]).strip()
    
