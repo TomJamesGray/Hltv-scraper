@@ -13,12 +13,13 @@ def getGameInfo(url):
         sys.exit(1)
     tree = html.fromstring(page.content)
     #Remove the st,rd... at the end of the date and the of to make it easier to read
-    date = tree.xpath("///div[@class='centerFade']/div[1]/div[2]/span[1]/text()")[0].strip().replace(
+    dateAndTime = tree.xpath("///div[@class='centerFade']/div[1]/div[2]/span[1]/text()")[0].strip().replace(
             "of ","").replace("st","").replace("th","").replace("rd","").replace("nd","")
-    print(date)
+    dateAndTime = dateAndTime + " " + tree.xpath("///div[@class='centerFade']/div[1]/div[2]/span[2]/text()")[0].strip()
+    print(dateAndTime)
     #Get time object from date retrieved
-    dateObj = time.strptime(date,"%d %B %Y")
-    
+    dateObj = time.strptime(dateAndTime,"%d %B %Y %H:%M")
+    print(time.strftime("%d/%m/%Y",dateObj))
 
 
 getGameInfo("http://www.hltv.org/match/2303150-natus-vincere-echo-fox-eleague-season-1")
