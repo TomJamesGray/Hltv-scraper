@@ -19,7 +19,7 @@ def getGameInfo(url):
     print(dateAndTime)
     #Get time object from date retrieved
     dateObj = time.strptime(dateAndTime,"%d %B %Y %H:%M")
-    print(time.strftime("%d/%m/%Y",dateObj))
+    return time.strftime("%Y%m%d %H:%M",dateObj)
 
 
-getGameInfo("http://www.hltv.org/match/2303150-natus-vincere-echo-fox-eleague-season-1")
+#getGameInfo("http://www.hltv.org/match/2303150-natus-vincere-echo-fox-eleague-season-1")

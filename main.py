@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from lxml import html
+import retrieveMatchInfo
 import requests
 import sys
 import logging
@@ -20,7 +21,7 @@ def stripFromList(data,toStrip):
         data[i] = data[i].strip(toStrip)
 
 #Insert data to the db
-def insertMatchData(teamOne,teamTwo,matchUrl,db):
+def insertMatchData(teamOne,teamTwo,matchUrl,matchDate,db):
     global baseURL
     conn = sqlite3.connect(db)
     curs = conn.cursor()
@@ -30,8 +31,8 @@ def insertMatchData(teamOne,teamTwo,matchUrl,db):
 
     for i in range(0,len(teamOne)):
         try:
-            curs.execute("INSERT INTO matches ('Team1','Team2','MatchUrl') VALUES (?,?,?)",
-                (teamOne[i],teamTwo[i],baseURL + matchUrl[i]))
+            curs.execute("INSERT INTO matches ('Team1','Team2','MatchUrl','MatchDate') VALUES (?,?,?,?)",
+                (teamOne[i],teamTwo[i],matchUrl[i],matchDate[i]))
         except sqlite3.IntegrityError:
             logging.info("Duplicate match url {}".format(matchUrl[i]))
             logging.info("Skipping match")
@@ -54,6 +55,12 @@ def main():
     teamTwo = stripList(tree.xpath("///div[@class='matchTeam2Cell']/a/child::text()"))
     #Get match url
     matchUrl = stripList(tree.xpath("///div[@class='matchActionCell']/a/@href"))
-    insertMatchData(teamOne,teamTwo,matchUrl,"matches.db")
+    matchDate = []
+    for i in range(0,len(matchUrl)):
+        #Prepend the baseUrl to the match URL
+        matchUrl[i] = baseURL + matchUrl[i]
+        #use the matchUrl to retrieve the matchInfo
+        matchDate.append(retrieveMatchInfo.getGameInfo(matchUrl[i]))
+    insertMatchData(teamOne,teamTwo,matchUrl,matchDate,"matches.db")
 if __name__ == "__main__":
     main()
