@@ -2,7 +2,7 @@ import requests
 import logging
 import sys
 import time
-from main import stripList
+from helpers import stripList
 from lxml import html
 #Retrieve the date and time for the match from the 
 #given url and return it in form YYYYMMDD HH:MM

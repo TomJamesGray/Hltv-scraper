@@ -1,3 +1,3 @@
-from main import stripList,stripFromList
+from helpers import stripList
 def testStripList():
     assert(stripList([""," test"]) == ["test"])
