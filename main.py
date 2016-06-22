@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 from lxml import html
-from helpers import stripList,stripFromList
+from helpers import stripList,stripFromList,removeDuplicates,retrieveMatchUrls
 import retrieveMatchInfo
 import requests
 import sys
 import logging
 import sqlite3
 baseURL = "http://www.hltv.org"
+db = "matches.db"
 #Insert data to the db
 def insertMatchData(teamOne,teamTwo,matchUrl,matchDate,db):
     global baseURL
@@ -25,8 +26,10 @@ def insertMatchData(teamOne,teamTwo,matchUrl,matchDate,db):
             logging.info("Skipping match")
             continue
     conn.commit()
+
 def main():
     global baseURL
+    global db
     logging.basicConfig(level=logging.DEBUG)
 
     #Get raw match page from hltv
@@ -42,12 +45,22 @@ def main():
     teamTwo = stripList(tree.xpath("///div[@class='matchTeam2Cell']/a/child::text()"))
     #Get match url
     matchUrl = stripList(tree.xpath("///div[@class='matchActionCell']/a/@href"))
-    matchDate = []
+    
+    #Prepend the baseUrl to the matchUrls for use in removeDuplicates()
     for i in range(0,len(matchUrl)):
-        #Prepend the baseUrl to the match URL
         matchUrl[i] = baseURL + matchUrl[i]
+   # print(matchUrl)
+    #Check for duplicates and remove any duplicates
+    #This is done based on the URL of the match
+    removedDuplicates = removeDuplicates(matchUrl,retrieveMatchUrls(db),[teamOne,teamTwo])
+    matchUrl =removedDuplicates[0]
+    teamOne = removedDuplicates[1][0]
+    teamTwo = removedDuplicates[1][1]
+    
+    matchesDates = []
+    for i in range(0,len(matchUrl)):
         #use the matchUrl to retrieve the matchInfo
-        matchDate.append(retrieveMatchInfo.getGameTime(matchUrl[i]))
-    insertMatchData(teamOne,teamTwo,matchUrl,matchDate,"matches.db")
+        matchesDates.append(retrieveMatchInfo.getGameTime(matchUrl[i]))
+    insertMatchData(teamOne,teamTwo,matchUrl,matchesDates,db)
 if __name__ == "__main__":
     main()
